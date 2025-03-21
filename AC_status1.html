@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AC Status with Weather API</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
   <!-- Navbar -->
@@ -37,7 +39,8 @@
       <div class="bg-white p-5 rounded-lg shadow-md mt-5">
         <div class="flex items-center justify-between">
           <span class="text-gray-700 font-medium text-lg">Mode</span>
-          <button id="modeButton" class="px-4 py-2 rounded-lg bg-red-500 text-white font-semibold transition duration-300">
+          <button id="modeButton"
+            class="px-4 py-2 rounded-lg bg-red-500 text-white font-semibold transition duration-300">
             Manual
           </button>
         </div>
@@ -53,9 +56,56 @@
     </div>
   </div>
 
+  <!-- Detailed Weather API Information -->
+  <div class="flex justify-center items-center mt-6 mb-10">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Weather Details</h3>
+      <div class="space-y-3">
+        <!-- Temperature Information -->
+        <div class="bg-blue-50 p-3 rounded-lg mb-4">
+          <div class="flex justify-between items-center p-2 rounded">
+            <span class="text-blue-700 font-medium">Today's Temperature</span>
+            <span id="temp2" class="font-medium text-blue-800">--</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded">
+            <span class="text-blue-700 font-medium">AC Suggested Temperature</span>
+            <span id="suggestedTemp2" class="font-medium text-blue-800">--</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded">
+            <span class="text-blue-700 font-medium">Estimated AC Hours</span>
+            <span id="hours2" class="font-medium text-blue-800">--</span>
+          </div>
+          <!-- Temperature Description -->
+          <div class="mt-4 p-3 bg-white rounded-lg">
+            <p class="text-gray-700 leading-relaxed" id="tempDescription">
+              Loading temperature recommendations...
+            </p>
+          </div>
+        </div>
+        <!-- Weather Conditions -->
+        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+          <span class="text-gray-600">Humidity</span>
+          <span id="humidity" class="font-medium">--</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+          <span class="text-gray-600">Wind Speed</span>
+          <span id="windSpeed" class="font-medium">--</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+          <span class="text-gray-600">Weather Condition</span>
+          <span id="weatherCondition" class="font-medium">--</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+          <span class="text-gray-600">Feels Like</span>
+          <span id="feelsLike" class="font-medium">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
-    const apiKey = "YOUR_API_KEY"; // Replace with your OpenWeatherMap API key
+    const apiKey = "32cfeb803e0c5a41b822acc959263eda";
     const city = "Kathmandu"; // Change city if needed
     document.getElementById("cityName").innerText = city;
 
@@ -65,6 +115,17 @@
         if (data.main && data.main.temp) {
           const currentTemp = data.main.temp;
           document.getElementById('temp').innerText = currentTemp + '°C';
+          document.getElementById('temp2').innerText = currentTemp + '°C';
+
+          // Update additional weather information
+          document.getElementById('humidity').innerText = data.main.humidity + '%';
+          document.getElementById('windSpeed').innerText = data.wind.speed + ' m/s';
+          document.getElementById('weatherCondition').innerText = data.weather[0].main;
+          document.getElementById('feelsLike').innerText = data.main.feels_like + '°C';
+
+          // Update temperature description
+          const description = `Based on the current temperature of ${currentTemp}°C in ${city}, we recommend setting your AC to ${suggestedTemp}. For optimal comfort and energy efficiency, we suggest running your AC for ${hours} today.`;
+          document.getElementById('tempDescription').innerText = description;
 
           // Suggest AC temperature based on today's temperature
           let suggestedTemp;
@@ -74,6 +135,7 @@
           else suggestedTemp = '26°C';
 
           document.getElementById('suggestedTemp').innerText = suggestedTemp;
+          document.getElementById('suggestedTemp2').innerText = suggestedTemp;
 
           // Estimate AC usage hours
           let hours;
@@ -83,19 +145,28 @@
           else hours = '3 hrs';
 
           document.getElementById('hours').innerText = hours;
+          document.getElementById('hours2').innerText = hours;
         } else {
           document.getElementById('temp').innerText = 'N/A';
+          document.getElementById('temp2').innerText = 'N/A';
           document.getElementById('suggestedTemp').innerText = 'N/A';
+          document.getElementById('suggestedTemp2').innerText = 'N/A';
           document.getElementById('hours').innerText = 'N/A';
+          document.getElementById('hours2').innerText = 'N/A';
+          document.getElementById('tempDescription').innerText = 'Temperature data is currently unavailable.';
         }
       })
       .catch(error => {
         console.error("Weather API error:", error);
         document.getElementById('temp').innerText = 'N/A';
+        document.getElementById('temp2').innerText = 'N/A';
         document.getElementById('suggestedTemp').innerText = 'N/A';
+        document.getElementById('suggestedTemp2').innerText = 'N/A';
         document.getElementById('hours').innerText = 'N/A';
+        document.getElementById('hours2').innerText = 'N/A';
+        document.getElementById('tempDescription').innerText = 'Unable to fetch temperature data. Please try again later.';
       });
-    
+
     // Toggle Mode (Manual / Automatic)
     document.getElementById("modeButton").addEventListener("click", function () {
       if (this.innerText === "Manual") {
@@ -111,4 +182,5 @@
   </script>
 
 </body>
+
 </html>

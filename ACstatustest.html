@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Bar Graph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-grey-100">
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+        <button class="bg-gray-300 p-2 rounded">Logo</button>
+        <div class="space-x-12">
+            <a href="#" class="text-black font-semibold">Home</a>
+            <a href="#" class="text-black font-semibold">Explore</a>
+            <a href="#" class="text-black font-semibold">Directory</a>
+            <a href="#" class="text-black font-semibold">Academy</a>
+            <a href="#" class="text-black font-semibold">Conferences</a>
+        </div>
+        <div class="bg-blue-500 p-2 rounded-full">
+            <span class="text-white text-lg">👤</span>
+        </div>
+    </nav>
+    
+    <div class="flex justify-center mt-10">
+        <div class="bg-blue-200 p-6 rounded-lg shadow-lg w-2/3 text-center relative">
+            <h2 class="text-2xl font-bold">Weekly Bar Graph</h2>
+            <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+            
+            <div class="bg-white p-6 mt-6 rounded-lg shadow-md w-full max-w-lg mx-auto text-center">
+                <p class="mt-4 text-lg" id="weatherSummary"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "32cfeb803e0c5a41b822acc959263eda"; 
+        const city = "Dubai"; 
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.main && data.main.temp) {
+                    const currentTemp = data.main.temp;
+                    let suggestedTemp;
+                    if (currentTemp >= 35) suggestedTemp = '20°C';
+                    else if (currentTemp >= 30) suggestedTemp = '22°C';
+                    else if (currentTemp >= 25) suggestedTemp = '24°C';
+                    else suggestedTemp = '26°C';
+
+                    let hours;
+                    if (currentTemp >= 35) hours = '6 hours';
+                    else if (currentTemp >= 30) hours = '5 hours';
+                    else if (currentTemp >= 25) hours = '4 hours';
+                    else hours = '3 hours';
+
+                    document.getElementById('weatherSummary').innerText = `The current temperature is ${currentTemp}°C. The suggested AC temperature for this condition is ${suggestedTemp}, and it is recommended to run the AC for ${hours}.`;
+                } else {
+                    document.getElementById('weatherSummary').innerText = 'Weather data is not available at the moment.';
+                }
+            })
+            .catch(error => {
+                console.error("Weather API error:", error);
+                document.getElementById('weatherSummary').innerText = 'Weather data could not be retrieved.';
+            });
+    </script>
+</body>
+</html>
