@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+        <button class="bg-gray-300 p-2 rounded">Logo</button>
+        <div class="space-x-6">
+            <a href="#" class="text-black font-semibold">Home</a>
+            <a href="#" class="text-black font-semibold">Explore</a>
+            <a href="#" class="text-black font-semibold">Directory</a>
+            <a href="#" class="text-black font-semibold">Academy</a>
+            <a href="#" class="text-black font-semibold">Conferences</a>
+        </div>
+        <div class="bg-blue-500 p-2 rounded-full">
+            <span class="text-white text-lg">👤</span>
+        </div>
+    </nav>
+    
+    <div class="flex justify-center mt-10">
+        <div class="bg-blue-200 p-6 rounded-lg shadow-lg w-2/3 text-center relative">
+            <h2 class="text-2xl font-bold">AC Status</h2>
+            <div class="relative">
+                <img src="Images/Ac_status.jpg" alt="AC Status" class="w-52 h-52 mx-auto rounded-lg relative mt-4">
+            </div>
+            
+            <div class="bg-white p-6 mt-6 rounded-lg shadow-md relative">
+                <div class="flex items-center justify-start space-x-4 mb-4">
+                    <span class="font-semibold">Mode</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="modeToggle" class="sr-only" onchange="toggleMode()">
+                        <div id="slider" class="w-14 h-7 bg-gray-300 rounded-full transition-colors relative">
+                            <div id="sliderButton" class="absolute top-0.5 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform transform"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <table class="w-full border">
+                    <tr class="border-b">
+                        <td class="p-2 font-semibold">City</td>
+                        <td class="p-2" id="cityName">N/A</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-2 font-semibold">Today's Temperature</td>
+                        <td class="p-2" id="temp">N/A</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-2 font-semibold">AC Suggested Temperature</td>
+                        <td class="p-2" id="suggestedTemp">N/A</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-2 font-semibold">Hours Recommended</td>
+                        <td class="p-2" id="hours">N/A</td>
+                    </tr>
+                </table>
+              
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "32cfeb803e0c5a41b822acc959263eda"; 
+        const city = "China"; 
+        document.getElementById("cityName").innerText = city;
+    
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.main && data.main.temp) {
+                    const currentTemp = data.main.temp;
+                    document.getElementById('temp').innerText = currentTemp + '°C';
+    
+                    let suggestedTemp;
+                    if (currentTemp >= 35) suggestedTemp = '20°C';
+                    else if (currentTemp >= 30) suggestedTemp = '22°C';
+                    else if (currentTemp >= 25) suggestedTemp = '24°C';
+                    else suggestedTemp = '26°C';
+    
+                    document.getElementById('suggestedTemp').innerText = suggestedTemp;
+    
+                    let hours;
+                    if (currentTemp >= 35) hours = '6 hrs';
+                    else if (currentTemp >= 30) hours = '5 hrs';
+                    else if (currentTemp >= 25) hours = '4 hrs';
+                    else hours = '3 hrs';
+    
+                    document.getElementById('hours').innerText = hours;
+    
+                    fetch('https://api.example.com/mode')
+                        .then(response => response.json())
+                        .then(modeData => {
+                            document.getElementById('mode').innerText = modeData.mode || 'N/A';
+                        })
+                        .catch(error => {
+                            console.error("Mode API error:", error);
+                            document.getElementById('mode').innerText = 'N/A';
+                        });
+                } else {
+                    document.getElementById('temp').innerText = 'N/A';
+                    document.getElementById('suggestedTemp').innerText = 'N/A';
+                    document.getElementById('hours').innerText = 'N/A';
+                    document.getElementById('mode').innerText = 'N/A';
+                }
+            })
+            .catch(error => {
+                console.error("Weather API error:", error);
+                document.getElementById('temp').innerText = 'N/A';
+                document.getElementById('suggestedTemp').innerText = 'N/A';
+                document.getElementById('hours').innerText = 'N/A';
+                document.getElementById('mode').innerText = 'N/A';
+            });
+
+        function toggleMode() {
+            let modeToggle = document.getElementById("modeToggle");
+            let slider = document.getElementById("slider");
+            let sliderButton = document.getElementById("sliderButton");
+            
+            if (modeToggle.checked) {
+                slider.classList.remove("bg-gray-300");
+                slider.classList.add("bg-green-500");
+                sliderButton.classList.add("translate-x-7");
+                alert("Mode set to Automatic");
+            } else {
+                slider.classList.remove("bg-green-500");
+                slider.classList.add("bg-gray-300");
+                sliderButton.classList.remove("translate-x-7");
+                alert("Mode set to Manual");
+            }
+        }
+    </script>
+</body>
+</html>
