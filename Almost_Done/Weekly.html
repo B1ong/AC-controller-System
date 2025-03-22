@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Bar Graph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-grey-100">
+        <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+          <div class="bg-gray-200 p-1 flex justify-center items-center font-semibold">
+            <img class="w-12" alt="Logo" src="/Images/ logo.png">
+          </div>
+          <div class="space-x-6">
+            <a href="#"
+              class="text-lg font-semibold text-gray-800 hover:text-blue-400 transition duration-300 relative pr-3">
+              Home
+              <span
+                class="absolute left-0 bottom-[-4px] w-full h-[2px] bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </a>
+            <a href="#"
+              class="text-lg font-semibold text-gray-800 hover:text-blue-400 transition duration-300 relative pr-3">
+              Explore
+              <span
+                class="absolute left-0 bottom-[-4px] w-full h-[2px] bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </a>
+            <a href="#"
+              class="text-lg font-semibold text-gray-800 hover:text-blue-400 transition duration-300 relative group pr-3">
+              Directory
+              <span
+                class="absolute left-0 bottom-[-4px] w-full h-[2px] bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </a>
+            <a href="#"
+              class="text-lg font-semibold text-gray-800 hover:text-blue-400 transition duration-300 relative group pr-3">
+              Academy
+              <span
+                class="absolute left-0 bottom-[-4px] w-full h-[2px] bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </a>
+            <a href="#"
+              class="text-lg font-semibold text-gray-800 hover:text-blue-400 transition duration-300 relative group pr-3">
+              Conferences
+              <span
+                class="absolute left-0 bottom-[-4px] w-full h-[2px] bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </a>
+          </div>
+          <div class="bg-blue-400 p-2 rounded-full">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-8 h-8" alt="User">
+          </div>
+        </nav>
+      
+    <div class="flex justify-center mt-10">
+        <div class="bg-blue-200 p-6 rounded-lg shadow-lg max-w-2xl w-full text-center">
+            <h2 class="text-2xl font-bold ">Weekly Bar Graph</h2>
+            <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+            <div class="bg-white p-4 mt-4 rounded-lg shadow-md">
+                <p id="insights" class="text-sm text-gray-600"></p>
+            </div>
+
+            <!-- Indexing Part-->
+            <!-- <div class="bg-white p-4 mt-4 rounded-lg shadow-md flex items-center space-x-4">
+                <span class="font-semibold">Index</span>
+                <div class="flex items-center"><span class="w-4 h-4 bg-green-500 inline-block mr-2"></span> Based on hr</div>
+                <div class="flex items-center"><span class="w-4 h-4 bg-yellow-500 inline-block mr-2"></span> Carbon footprint </div>
+            </div>
+        </div>
+    </div> -->
+
+    <script>
+        const ctx = document.getElementById('weeklyChart').getContext('2d');
+        const dataValues1 = [10, 15, 7, 14, 6, 9, 8];
+        const dataValues2 = [14, 16, 10, 18, 8, 12, 14];
+        const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'AC consumption per hour',
+                        data: dataValues1,
+                        backgroundColor: 'green',
+                    },
+                    {
+                        label: 'Carbon Footprint',
+                        data: dataValues2,
+                        backgroundColor: 'yellow',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        function generateInsights(data1, data2, labels) {
+            let maxIndex1 = data1.indexOf(Math.max(...data1));
+            let maxIndex2 = data2.indexOf(Math.max(...data2));
+            let minIndex1 = data1.indexOf(Math.min(...data1));
+            let minIndex2 = data2.indexOf(Math.min(...data2));
+            
+            return `The highest hour of AC was recorded on ${labels[maxIndex1]} (${data1[maxIndex1]}) , while the lowest was on ${labels[minIndex1]} (${data1[minIndex1]}). 
+                    For Carbon Footprint, the peak was recorded on ${labels[maxIndex2]} with (${data2[maxIndex2]}) and the lowest was recorded on ${labels[minIndex2]} of (${data2[minIndex2]}).`;
+        }
+
+        document.getElementById('insights').innerText = generateInsights(dataValues1, dataValues2, labels);
+    </script>
+</body>
+</html>
